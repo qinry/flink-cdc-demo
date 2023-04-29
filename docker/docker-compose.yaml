@@ -1,0 +1,40 @@
+version: '2.1'
+services:
+  mysql:
+    image: mysql/mysql-server:5.6.51
+    ports:
+      - "3306:3306"
+    privileged: true
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_USER=mysqluser
+      - MYSQL_PASSWORD=mysqlpw
+    volumes:
+      - $PWD/mysql-scripts:/docker-entrypoint-initdb.d
+      - $PWD/mysql-config:/etc/mysql
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=elasticpw
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.2
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=elasticpw
