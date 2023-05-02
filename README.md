@@ -142,6 +142,6 @@ docker compose down
 
 ### 注意
 
-- 改了MySQL或Elasticsearch密码，FlinkCDC.java相应也要修改
+- 改了MySQL或Elasticsearch密码，FlinkCdcDs.java/FlinkCdcTable.java相应也要修改
 - 这里演示的是使用Table API实现MySql多表连接同步到ES，在pom.xml把mainClass配置修改为FlinkCdcDs，
 再`mvn clean install -DskipTests`后，接着启动程序，将演示的是使用DataStream API实现MySql单表同步ES
