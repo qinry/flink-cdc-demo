@@ -30,5 +30,5 @@ build/
 ### VS Code ###
 .vscode/
 
-./dependency-reduced-pom.xml
-./logs
+dependency-reduced-pom.xml
+logs/
