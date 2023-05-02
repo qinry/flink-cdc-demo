@@ -5,16 +5,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Orders {
+public class EnrichedOrders {
     private Integer orderId;
-    private LocalDateTime orderDate;
+    private Date orderDate;
     private String customerName;
     private BigDecimal price;
     private Integer productId;
     private Boolean orderStatus;
+    private String productName;
+    private String productDescription;
+    private Integer shipmentId;
+    private String origin;
+    private String destination;
+    private Boolean isArrived;
 }

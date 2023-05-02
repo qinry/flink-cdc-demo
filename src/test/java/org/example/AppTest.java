@@ -12,6 +12,8 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.example.model.Orders;
+import org.example.model.Products;
+import org.example.model.Shipments;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -42,6 +44,44 @@ public class AppTest {
 
         for (Orders orders : ordersList) {
             System.out.println(ObjectMapperUtils.writeValueAsString(orders));
+        }
+
+        searchRequest = Requests.searchRequest("products");
+
+        searchSourceBuilder = SearchSourceBuilder.searchSource()
+                .query(QueryBuilders.matchAllQuery()).trackTotalHits(true);
+        searchRequest.source(searchSourceBuilder);
+        searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        hits = searchResponse.getHits();
+
+        List<Products> productsList = new ArrayList<>();
+        for (SearchHit hit : hits.getHits()) {
+            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+            Products products = ObjectMapperUtils.convertValue(sourceAsMap, Products.class);
+            productsList.add(products);
+        }
+
+        for (Products products : productsList) {
+            System.out.println(ObjectMapperUtils.writeValueAsString(products));
+        }
+
+        searchRequest = Requests.searchRequest("shipments");
+
+        searchSourceBuilder = SearchSourceBuilder.searchSource()
+                .query(QueryBuilders.matchAllQuery()).trackTotalHits(true);
+        searchRequest.source(searchSourceBuilder);
+        searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        hits = searchResponse.getHits();
+
+        List<Shipments> shipmentsList = new ArrayList<>();
+        for (SearchHit hit : hits.getHits()) {
+            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+            Shipments shipments = ObjectMapperUtils.convertValue(sourceAsMap, Shipments.class);
+            shipmentsList.add(shipments);
+        }
+
+        for (Shipments shipments : shipmentsList) {
+            System.out.println(ObjectMapperUtils.writeValueAsString(shipments));
         }
     }
 

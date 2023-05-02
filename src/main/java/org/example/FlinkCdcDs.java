@@ -22,13 +22,17 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.RestClientBuilder;
 import org.example.model.Orders;
 import org.example.model.Products;
+import org.example.model.Shipments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class FlinkCDC {
-    private static final Logger log = LoggerFactory.getLogger(FlinkCDC.class);
+/**
+ * DataStream API 实现单表同步
+ */
+public class FlinkCdcDs {
+    private static final Logger log = LoggerFactory.getLogger(FlinkCdcDs.class);
 
     public static void main(String[] args) throws Exception {
         Properties debeziumProperties = new Properties();
@@ -40,7 +44,7 @@ public class FlinkCDC {
                 .hostname("127.0.0.1")
                 .port(3306)
                 .databaseList("mydb")
-                .tableList("mydb.products,mydb.orders")
+                .tableList("mydb.products,mydb.orders,mydb.shipments")
                 .username("mysqluser")
                 .password("mysqlpw")
                 .serverTimeZone("Asia/Shanghai")
@@ -61,12 +65,15 @@ public class FlinkCDC {
 
         TableIndexConvertor.put("products", "products");
         TableIndexConvertor.put("orders", "orders");
+        TableIndexConvertor.put("shipments", "shipments");
 
         GetSourceMapExecutor.putGetIdFunction("products", element -> DebeziumJsonUtils.getDataPrimaryKey(element, "id"));
         GetSourceMapExecutor.putGetIdFunction("orders", element -> DebeziumJsonUtils.getDataPrimaryKey(element, "order_id"));
+        GetSourceMapExecutor.putGetIdFunction("shipments", element -> DebeziumJsonUtils.getDataPrimaryKey(element, "shipment_id"));
 
         GetSourceMapExecutor.putGetSourceMapFunction("products", element -> DebeziumJsonUtils.convertEntity(element, Products.class));
         GetSourceMapExecutor.putGetSourceMapFunction("orders", element -> DebeziumJsonUtils.convertEntity(element, Orders.class));
+        GetSourceMapExecutor.putGetSourceMapFunction("shipments", element -> DebeziumJsonUtils.convertEntity(element, Shipments.class));
 
         ElasticsearchSink.Builder<String> esSinkBuilder = new ElasticsearchSink.Builder<>(
                 httpHosts,
