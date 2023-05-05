@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   mysql:
-    image: mysql/mysql-server:5.6.51
+    image: mysql/mysql-server:5.6.30
     ports:
       - "3306:3306"
     privileged: true
@@ -10,8 +10,12 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
     volumes:
-      - $PWD/mysql-scripts:/docker-entrypoint-initdb.d
-      - $PWD/mysql-config:/etc/mysql
+      - ./mysql-scripts:/docker-entrypoint-initdb.d
+      - ./mysql-config:/etc/mysql
+    command: >
+      bash -c 
+      "chmod 644 /etc/mysql/*.cnf
+      && /entrypoint.sh mysqld"
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
     environment:

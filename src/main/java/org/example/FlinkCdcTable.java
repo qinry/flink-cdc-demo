@@ -97,6 +97,6 @@ public class FlinkCdcTable {
                 " LEFT JOIN products AS p ON o.product_id = p.id\n" +
                 " LEFT JOIN shipments AS s ON o.order_id = s.order_id");
 
-        env.execute();
+        env.execute("MySql To Elasticsearch");
     }
 }
